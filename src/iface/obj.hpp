@@ -5,7 +5,7 @@
 #include <memory>
 
 #define CLASS_NAME_CRUFT(name) \
-	static const char* StaticClassName() {static const char* cc = #name; return cc; }\
+	static const char* StaticClassName() { static const char* cc = #name; return cc; }\
 	virtual const char* ClassName() const { return StaticClassName(); }
 
 /** A basic object. Can be used in the scene hierarchy. */

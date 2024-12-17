@@ -12,9 +12,10 @@ IObject::~IObject() {
 
 void IObject::Print(std::ostream& stream) const {
     static int indent_lvl = 0;
-    // "mName (IObject)"
+
     for (int _ = 0; _ < indent_lvl; _++) stream << '\t';
     stream << mName << " (" << ClassName() << ")\n";
+    
     for (int _ = 0; _ < indent_lvl; _++) stream << '\t';
     if (!mChildObjs.empty()) {
         indent_lvl++;
