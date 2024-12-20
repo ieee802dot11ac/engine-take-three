@@ -13,17 +13,20 @@ class Object {
 public:
 	Object();
 	Object(const char* name);
+	Object(const Object&&) = delete;
 	virtual ~Object();
 	CLASS_NAME_CRUFT(Object)
 	virtual void Print(std::ostream&) const;
-	virtual void Save() const;
-	virtual void Load();
+//	virtual void Save() const;
+//	virtual void Load();
 	
 	template <typename T>
 	bool CanBecome() const { if (dynamic_cast<const T*>(this) != NULL) return true; else return false; }
+	void Reparent(Object* new_parent);
 
 	std::string mName;
-	std::vector<std::shared_ptr<Object>> mChildObjs;
+	Object* mParent;
+	std::vector<Object*> mChildObjs;
 };
 
-extern std::unique_ptr<Object> gSceneRootNode;
+extern std::shared_ptr<Object> gSceneRootNode;
