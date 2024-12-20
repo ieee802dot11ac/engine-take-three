@@ -1,11 +1,11 @@
-#include "iface/obj.hpp"
+#include "obj/obj.hpp"
 #include <iostream>
 
 int main() {
-    std::cout << "hai! :3" << std::endl;
+    std::cout << "engine initing, commit " << GIT_COMMIT_HASH << std::endl;
     int i = 0;
     while (i++ < 10) {
-        gSceneRootNode->mChildObjs.push_back(std::shared_ptr<IObject>(new IObject));
+        gSceneRootNode->mChildObjs.push_back(std::shared_ptr<Object>(new Object));
     }
     gSceneRootNode->Print(std::cout);
 }

@@ -35,6 +35,6 @@ execute_process(
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-        "-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\" -DGIT_BRANCH=\"${GIT_BRANCH}\"")
+        "-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
 
 target_link_libraries(engine PRIVATE "${SDL_LIB}" "${GL_LIB}" "${MAFS}")

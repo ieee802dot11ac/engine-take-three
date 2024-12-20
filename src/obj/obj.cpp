@@ -1,16 +1,16 @@
 #include "obj.hpp"
 
-std::unique_ptr<IObject> gSceneRootNode(new IObject("[ROOT NODE]"));
+std::unique_ptr<Object> gSceneRootNode(new Object("[ROOT NODE]"));
 
-IObject::IObject() : mName("[unnamed]") {}
+Object::Object() : mName("[unnamed]") {}
 
-IObject::IObject(const char* name) : mName(name) {}
+Object::Object(const char* name) : mName(name) {}
 
-IObject::~IObject() {
+Object::~Object() {
     mChildObjs.clear();
 }
 
-void IObject::Print(std::ostream& stream) const {
+void Object::Print(std::ostream& stream) const {
     static int indent_lvl = 0;
 
     for (int _ = 0; _ < indent_lvl; _++) stream << '\t';

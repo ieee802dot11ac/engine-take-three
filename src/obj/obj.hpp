@@ -9,19 +9,21 @@
 	virtual const char* ClassName() const { return StaticClassName(); }
 
 /** A basic object. Can be used in the scene hierarchy. */
-class IObject {
+class Object {
 public:
-	IObject();
-	IObject(const char* name);
-	virtual ~IObject();
-	CLASS_NAME_CRUFT(IObject)
+	Object();
+	Object(const char* name);
+	virtual ~Object();
+	CLASS_NAME_CRUFT(Object)
 	virtual void Print(std::ostream&) const;
+	virtual void Save() const;
+	virtual void Load();
 	
 	template <typename T>
-	bool CanBecome() const { if (dynamic_cast<T*>(this) != NULL) return true; else return false; }
+	bool CanBecome() const { if (dynamic_cast<const T*>(this) != NULL) return true; else return false; }
 
-	const char* mName;
-	std::vector<std::shared_ptr<IObject>> mChildObjs;
+	std::string mName;
+	std::vector<std::shared_ptr<Object>> mChildObjs;
 };
 
-extern std::unique_ptr<IObject> gSceneRootNode;
+extern std::unique_ptr<Object> gSceneRootNode;
