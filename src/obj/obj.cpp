@@ -2,6 +2,10 @@
 #include <memory>
 #include <vector>
 
+#include "iface/istream.hpp"
+
+static int OBJ_REV = 0;
+
 std::shared_ptr<Object> gSceneRootNode(new Object("[ROOT NODE]"));
 
 Object::Object() : mName("[unnamed]"), mParent(nullptr) {}
@@ -15,14 +19,14 @@ Object::~Object() {
 void Object::Print(std::ostream& stream) const {
 	static int indent_lvl = 0;
 
-	for (int _ = 0; _ < indent_lvl; _++) stream << '\t';
+	for (int _ = indent_lvl; _--;) stream << '\t';
 	stream << mName << " (" << ClassName() << ")\n";
 	
-	for (int _ = 0; _ < indent_lvl; _++) stream << '\t';
+	for (int _ = indent_lvl; _--;) stream << '\t';
 	if (!mChildObjs.empty()) {
 		indent_lvl++;
 		stream << "Children:\n";
-		for (auto& child : mChildObjs) {
+		for (const Object* child : mChildObjs) {
 			child->Print(stream);
 			stream << '\n';
 		}
@@ -32,9 +36,26 @@ void Object::Print(std::ostream& stream) const {
 	}
 }
 
+void Object::Save(IStream& strm) const {
+	strm << OBJ_REV;
+	strm << mName;
+	if (mParent) strm << mParent->mName;
+	else strm << std::string("");
+	strm << mChildObjs;
+}
+
+void Object::Load(IStream& strm) {
+	int rev;
+	strm >> rev;
+	strm >> mName;
+	std::string parent_name;
+	strm >> parent_name;
+	mParent.reset(const_cast<Object*>(FindByName(parent_name)));
+	strm >> mChildObjs;
+}
+
 void Object::Reparent(Object* new_parent) {
 	if (mParent != nullptr) {
-//		std::erase_if(mParent->mChildObjs, [this](std::shared_ptr<Object> ptr) -> bool { return ptr.get() == this; });
 		for (std::vector<Object*>::iterator it = mParent->mChildObjs.begin(); it != mParent->mChildObjs.end(); it++) {
 			if (*it == this) {
 				mParent->mChildObjs.erase(it);
@@ -43,6 +64,19 @@ void Object::Reparent(Object* new_parent) {
 		}
 	}
 
-	mParent = new_parent;
+	mParent.reset(new_parent);
 	mParent->mChildObjs.push_back(this);
+}
+
+const Object* Object::FindByName(std::string name) const {
+	if (mName == name) {
+		return this;
+	} else {
+		for (const Object* o : mChildObjs) {
+			const Object* ptr;
+			if ((ptr = o->FindByName(name)) != nullptr) return ptr;
+			else continue;
+		}
+		return nullptr;
+	}
 }
