@@ -9,6 +9,7 @@ struct Vector2 {
 	float Dot(const Vector2& other) const { return x * other.y + y * other.x; }
 	float Length() const { return std::sqrt(x*x + y*y); }
 
+	// could simd these (no.)
 	Vector2& operator+=(const Vector2& rhs) { x += rhs.x; y += rhs.y; return *this; }
 	Vector2& operator-=(const Vector2& rhs) { x -= rhs.x; y -= rhs.y; return *this; }
 	Vector2& operator*=(const Vector2& rhs) { x *= rhs.x; y *= rhs.y; return *this; }
