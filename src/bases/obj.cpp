@@ -109,3 +109,10 @@ Object* Object::FindByName(std::string name) {
 		return nullptr;
 	}
 }
+
+void Object::ApplyFuncToChildren(void (*func)(Object *)) {
+	func(this);
+	for (Object* child : mChildObjs) {
+		child->ApplyFuncToChildren(func);
+	}
+}

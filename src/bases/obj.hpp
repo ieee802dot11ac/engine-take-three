@@ -34,6 +34,8 @@ public:
 	std::string mName;
 	std::shared_ptr<Object> mParent;
 	std::vector<Object*> mChildObjs;
+
+	void ApplyFuncToChildren(void (*)(Object*));
 };
 
 template <typename T>
