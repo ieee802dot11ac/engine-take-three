@@ -96,3 +96,16 @@ const Object* Object::FindByName(std::string name) const {
 		return nullptr;
 	}
 }
+
+Object* Object::FindByName(std::string name) {
+	if (mName == name) {
+		return this;
+	} else {
+		for (Object* o : mChildObjs) {
+			Object* ptr;
+			if ((ptr = o->FindByName(name)) != nullptr) return ptr;
+			else continue;
+		}
+		return nullptr;
+	}
+}

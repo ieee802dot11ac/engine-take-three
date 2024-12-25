@@ -22,8 +22,9 @@ public:
 //	virtual void Save(IStream&) const; // on hold until i figure out how to do type-safe binary saves/loads
 //	virtual void Load(IStream&);
 
-	/// recursively searches mChildObjs to find an object.
+	/// recursively searches mChildObjs to find an object. grabs the first node it finds with the matching name.
 	const Object* FindByName(std::string name) const;
+	Object* FindByName(std::string name);
 	void Reparent(Object* new_parent);
 	void Reparent(std::shared_ptr<Object> new_parent);
 
