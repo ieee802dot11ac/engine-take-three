@@ -7,6 +7,7 @@ class Positionable : public Object {
 public:
     Positionable();
     virtual ~Positionable();
+    CLASS_NAME_CRUFT(Positionable)
     
     Vector3 mPos;
     Vector3 mRot;
