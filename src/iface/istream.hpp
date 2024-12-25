@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include "obj/obj.hpp"
+#include "bases/obj.hpp"
 
 class IStream {
 public:
@@ -60,28 +60,30 @@ public:
     template <typename T>
     IStream& operator<<(const T* in) requires IsObj<T> {
         in->Save(*this);
+        return *this;
     }
 
     template <typename T>
     IStream& operator>>(T* out) requires IsObj<T> {
         out->Load(*this);
+        return *this;
     }
 
     template <typename T>
-    IStream& operator<<(const std::vector<T*>& in) requires IsObj<T> {
+    IStream& operator<<(const std::vector<T*>& in) {
         *this << in.size();
-        for (const T*& c : in) {
+        for (const T* c : in) {
             *this << c;
         }
         return *this;
     }
 
     template <typename T>
-    IStream& operator>>(std::vector<T*>& out) requires IsObj<T> {
+    IStream& operator>>(std::vector<T*>& out) {
         int size;
         *this >> size;
         out.resize(size);
-        for (char& c : out) {
+        for (T* c : out) {
             *this >> c;
         }
         return *this;

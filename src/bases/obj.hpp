@@ -19,16 +19,16 @@ public:
 	virtual ~Object();
 	CLASS_NAME_CRUFT(Object)
 	virtual void Print(std::ostream&) const;
-	virtual void Save(IStream&) const;
-	virtual void Load(IStream&);
-	
-	template <typename T>
-	bool CanBecome() const { if (dynamic_cast<const T*>(this) != NULL) return true; else return false; }
-	
-	void Reparent(Object* new_parent);
+//	virtual void Save(IStream&) const; // on hold until i figure out how to do type-safe binary saves/loads
+//	virtual void Load(IStream&);
 
 	/// recursively searches mChildObjs to find an object.
 	const Object* FindByName(std::string name) const;
+	void Reparent(Object* new_parent);
+	void Reparent(std::shared_ptr<Object> new_parent);
+
+	template <typename T>
+	bool CanBecome() const { if (dynamic_cast<const T*>(this) != NULL) return true; else return false; }
 
 	std::string mName;
 	std::shared_ptr<Object> mParent;

@@ -1,12 +1,19 @@
-#include "obj/obj.hpp"
+#include <cstdlib>
 #include <iostream>
 
+#include <SDL2/SDL.h>
+
+#include "bases/obj.hpp"
+
 int main() {
-    std::cout << "engine initing, commit " << GIT_COMMIT_HASH << std::endl;
+    SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "engine initalizing, commit " GIT_COMMIT_HASH);
+    SDL_Init(SDL_INIT_EVERYTHING);
+    atexit(SDL_Quit);
     int i = 0;
     while (i++ < 10) {
-        (new Object)->Reparent(gSceneRootNode.get());
+        (new Object)->Reparent(gSceneRootNode);
     }
     gSceneRootNode->mChildObjs[6]->Reparent(gSceneRootNode->mChildObjs[4]);
     gSceneRootNode->Print(std::cout);
+    return 0;
 }

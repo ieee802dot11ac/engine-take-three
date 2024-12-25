@@ -2,9 +2,9 @@
 #include <memory>
 #include <vector>
 
-#include "iface/istream.hpp"
+// #include "iface/istream.hpp"
 
-static int OBJ_REV = 0;
+// static int OBJ_REV = 0;
 
 std::shared_ptr<Object> gSceneRootNode(new Object("[ROOT NODE]"));
 
@@ -14,6 +14,7 @@ Object::Object(const char* name) : mName(name), mParent(nullptr) {}
 
 Object::~Object() {
 	mChildObjs.clear();
+	mParent.reset();
 }
 
 void Object::Print(std::ostream& stream) const {
@@ -36,6 +37,7 @@ void Object::Print(std::ostream& stream) const {
 	}
 }
 
+/* 
 void Object::Save(IStream& strm) const {
 	strm << OBJ_REV;
 	strm << mName;
@@ -52,7 +54,7 @@ void Object::Load(IStream& strm) {
 	strm >> parent_name;
 	mParent.reset(const_cast<Object*>(FindByName(parent_name)));
 	strm >> mChildObjs;
-}
+} */
 
 void Object::Reparent(Object* new_parent) {
 	if (mParent != nullptr) {
@@ -65,6 +67,20 @@ void Object::Reparent(Object* new_parent) {
 	}
 
 	mParent.reset(new_parent);
+	mParent->mChildObjs.push_back(this);
+}
+
+void Object::Reparent(std::shared_ptr<Object> new_parent) {
+	if (mParent != nullptr) {
+		for (std::vector<Object*>::iterator it = mParent->mChildObjs.begin(); it != mParent->mChildObjs.end(); it++) {
+			if (*it == this) {
+				mParent->mChildObjs.erase(it);
+				break;
+			}
+		}
+	}
+
+	mParent = new_parent;
 	mParent->mChildObjs.push_back(this);
 }
 
