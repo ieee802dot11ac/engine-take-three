@@ -1,6 +1,7 @@
 #include "rend.hpp"
 #include "bases/draw.hpp"
 #include "bases/obj.hpp"
+#include "rnd/utl.hpp"
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_opengl.h>
 #include <numbers>
@@ -23,6 +24,8 @@ Renderer::Renderer() {
 	glViewport(0, 0, DEFAULT_W, DEFAULT_H);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
+	EnableDepth();
+
 	ReinitPerspective(DEFAULT_W, DEFAULT_H, 100);
 }
 
@@ -41,6 +44,8 @@ Renderer::Renderer(int w, int h, std::string name) {
 	glViewport(0, 0, w, h);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 
+	EnableDepth();
+
 	ReinitPerspective(w, h, 100);
 }
 
@@ -58,18 +63,18 @@ void Renderer::DoSceneDraws() {
 				o->DoXIfIs<Drawable>([](Drawable* d) -> void { d->Draw(); });
 			}
 		);
-	glTranslatef(0,-0.2,0);
+	glMatrixMode(GL_MODELVIEW);
+	glRotatef(2.25, 0,1,1);
 	glBegin(GL_TRIANGLE_STRIP);
 	glColor3f(1,0,1);
 	glVertex3f(0,1,-1.5);
-	glColor3f(1,0,1);
+	glColor3f(1,1,0);
 	glVertex3f(1,1,-1);
 	glColor3f(0,1,1);
 	glVertex3f(0,0,-1.5);
-	glColor3f(1,1,0);
+	glColor3f(1,0,1);
 	glVertex3f(1,0,-1);
 	glEnd();
-	glTranslatef(0,0.2,0);
 	SDL_GL_SwapWindow(mWindow);
 }
 
