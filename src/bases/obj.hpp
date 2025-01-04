@@ -1,14 +1,20 @@
 #pragma once
 
 #include <ostream>
+#include <unordered_map>
 #include <vector>
 #include <memory>
 
+// macros to make loading from disk easier
+// uses const char* due to not changing @ runtime, and thus can't have as many
+// handling bugs
 #define CLASS_NAME_CRUFT(name) \
 	static const char* StaticClassName() { static const char* cc = #name; return cc; }\
 	virtual const char* ClassName() const { return StaticClassName(); }
 
 class IStream;
+
+typedef class Object* (*ObjFunc)(void);
 
 /** A basic object. Can be used in the scene hierarchy. */
 class Object {
@@ -25,17 +31,28 @@ public:
 	/// recursively searches mChildObjs to find an object. grabs the first node it finds with the matching name.
 	const Object* FindByName(std::string name) const;
 	Object* FindByName(std::string name);
+
+	/// Reparents `this` to new_parent.
 	void Reparent(Object* new_parent);
 	void Reparent(std::shared_ptr<Object> new_parent);
+	
+	void ApplyFuncToChildren(void (*)(Object*));
+	
+	// Create a new object from gObjectGenerators via the name given by cls_name.
+	Object* New(std::string cls_name);
+
+	static std::unordered_map<const char*, ObjFunc> gObjectGenerators; 
 
 	template <typename T>
 	bool CanBecome() const { if (dynamic_cast<const T*>(this) != NULL) return true; else return false; }
 
+	template <typename T>
+	void DoXIfIs(void (*func)(T*)) { T* obj = dynamic_cast<T*>(this); if (obj != nullptr) func(obj); }
+
+
 	std::string mName;
 	std::shared_ptr<Object> mParent;
 	std::vector<Object*> mChildObjs;
-
-	void ApplyFuncToChildren(void (*)(Object*));
 };
 
 template <typename T>

@@ -2,9 +2,12 @@
 #include <memory>
 #include <vector>
 
+#include <SDL2/SDL_log.h>
+
 // #include "iface/istream.hpp"
 
 // static int OBJ_REV = 0;
+std::unordered_map<const char*, ObjFunc> Object::gObjectGenerators;
 
 std::shared_ptr<Object> gSceneRootNode(new Object("[ROOT NODE]"));
 
@@ -115,4 +118,12 @@ void Object::ApplyFuncToChildren(void (*func)(Object *)) {
 	for (Object* child : mChildObjs) {
 		child->ApplyFuncToChildren(func);
 	}
+}
+
+Object* Object::New(std::string cls_name) {
+	if (gObjectGenerators.contains(cls_name.c_str())) {
+		return gObjectGenerators[cls_name.c_str()]();
+	}
+	SDL_LogInfo(SDL_LOG_CATEGORY_SYSTEM, "probably fine, but class %s failed to new properly", cls_name.c_str());
+	return nullptr;
 }
