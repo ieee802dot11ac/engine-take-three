@@ -3,11 +3,12 @@
 #include "bases/obj.hpp"
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_opengl.h>
+#include <numbers>
 
 #define DEFAULT_W 1600
 #define DEFAULT_H 1200
 
-Renderer::Renderer() { // TODO do fov by hand
+Renderer::Renderer() { 
 	mWindow = SDL_CreateWindow(
 		"Engine", 
 		SDL_WINDOWPOS_CENTERED, 
@@ -51,24 +52,36 @@ Renderer::~Renderer() {
 }
 
 void Renderer::DoSceneDraws() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	gSceneRootNode->ApplyFuncToChildren(
 		[](Object* o) -> void {
-				if (o->CanBecome<Drawable>()) {
-					dynamic_cast<Drawable*>(o)->Draw();
-				}
+				o->DoXIfIs<Drawable>([](Drawable* d) -> void { d->Draw(); });
 			}
 		);
+	glTranslatef(0,-0.2,0);
+	glBegin(GL_TRIANGLE_STRIP);
+	glColor3f(1,0,1);
+	glVertex3f(0,1,-1.5);
+	glColor3f(1,0,1);
+	glVertex3f(1,1,-1);
+	glColor3f(0,1,1);
+	glVertex3f(0,0,-1.5);
+	glColor3f(1,1,0);
+	glVertex3f(1,0,-1);
+	glEnd();
+	glTranslatef(0,0.2,0);
+	SDL_GL_SwapWindow(mWindow);
 }
 
 void Renderer::ReinitPerspective(int w, int h, float fov) {
-	const float DEG2RAD = SDL_acos(-1.0f) / 180;
-	const float front = 0.1;
-	const float back = 1000;
+	constexpr float DEG2RAD = std::numbers::pi / 180;
+	const float near = 0.1;
+	const float far = 1000;
 
-	float tangent = SDL_tan(fov/2 * DEG2RAD);		// tangent of half fovY
-	float top = front * tangent;					// half height of near plane
+	float tangent = SDL_tan(fov/2 * DEG2RAD);	// tangent of half fovY
+	float top = near * tangent;					// half height of near plane
 	float right = top * (float(w)/float(h));	// half width of near plane
 
 	glMatrixMode(GL_PROJECTION);
-	glFrustum(-right, right, -top, top, front, back);
+	glFrustum(-right, right, -top, top, near, far);
 }
