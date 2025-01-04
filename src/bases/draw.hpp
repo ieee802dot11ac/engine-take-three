@@ -4,10 +4,10 @@
 
 class Drawable : public Object {
 public:
-	Drawable();
-	virtual ~Drawable();
+	Drawable() : mShowing(false) {}
+	virtual ~Drawable() {}
 	CLASS_NAME_CRUFT(Drawable)
-	virtual void Draw();
+	virtual void Draw() {}
 
 	bool mShowing;
 };
