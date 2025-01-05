@@ -2,7 +2,7 @@
 
 #include "bases/obj.hpp"
 
-class Drawable : public Object {
+class Drawable : public virtual Object {
 public:
 	Drawable() : mShowing(false) {}
 	virtual ~Drawable() {}

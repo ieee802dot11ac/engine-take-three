@@ -3,7 +3,7 @@
 #include "bases/obj.hpp"
 #include "math/vec.hpp"
 
-class Positionable : public Object {
+class Positionable : public virtual Object {
 public:
     Positionable();
     virtual ~Positionable();
