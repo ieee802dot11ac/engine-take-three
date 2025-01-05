@@ -1,6 +1,7 @@
 #include "rend.hpp"
 #include "bases/draw.hpp"
 #include "bases/obj.hpp"
+#include "bases/pos.hpp"
 #include "rnd/utl.hpp"
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_opengl.h>
@@ -58,23 +59,21 @@ Renderer::~Renderer() {
 
 void Renderer::DoSceneDraws() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	gSceneRootNode->ApplyFuncToChildren(
-		[](Object* o) -> void {
-				o->DoXIfIs<Drawable>([](Drawable* d) -> void { d->Draw(); });
-			}
-		);
-	glMatrixMode(GL_MODELVIEW);
-	glRotatef(2.25, 0,1,1);
-	glBegin(GL_TRIANGLE_STRIP);
-	glColor3f(1,0,1);
-	glVertex3f(0,1,-1.5);
-	glColor3f(1,1,0);
-	glVertex3f(1,1,-1);
-	glColor3f(0,1,1);
-	glVertex3f(0,0,-1.5);
-	glColor3f(1,0,1);
-	glVertex3f(1,0,-1);
-	glEnd();
+	gSceneRootNode->ApplyFuncToChildren([](Object* o) -> void {
+		o->DoXIfIs<Drawable>([](Drawable* d) -> void {
+			glPushMatrix();
+			d->DoXIfIs<Positionable>([](Positionable* p) -> void {
+				Vector3 pos = p->WorldPos(), rot = p->WorldRot(), scl = p->WorldScl();
+				glTranslatef(pos.x, pos.y, pos.z);
+				glRotatef(rot.x, 1, 0, 0);
+				glRotatef(rot.y, 0, 1, 0);
+				glRotatef(rot.z, 0, 0, 1);
+				glScalef(scl.x, scl.y, scl.z);
+			});
+			d->Draw();
+			glPopMatrix();
+		});
+	});
 	SDL_GL_SwapWindow(mWindow);
 }
 
@@ -89,4 +88,5 @@ void Renderer::ReinitPerspective(int w, int h, float fov) {
 
 	glMatrixMode(GL_PROJECTION);
 	glFrustum(-right, right, -top, top, near, far);
+	glMatrixMode(GL_MODELVIEW);
 }
