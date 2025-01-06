@@ -14,21 +14,21 @@ class Test : public Drawable, public Positionable {
     virtual ~Test() {}
     CLASS_NAME_CRUFT(Test)
     virtual void Draw() {
-        mRot.x += 2;
+        mRot.y += 3;
         glBegin(GL_TRIANGLE_STRIP);
-		glColor3f(1,1,0);
-		glVertex3f(-0.5,0.5,-1);
-		glColor3f(1,0,1);
-		glVertex3f(0.5,0.5,-1);
-		glColor3f(1,0,1);
-		glVertex3f(-0.5,-0.5,-1);
-		glColor3f(0,1,1);
-		glVertex3f(0.5,-0.5,-1);
+		glColor3f(1,0,0);
+		glVertex3f(0,0,0);
+		glColor3f(0,1,0);
+		glVertex3f(0.5,0.5,0.5);
+		glColor3f(0,0,1);
+		glVertex3f(-0.5,-0.5,0.5);
+		glColor3f(1,1,1);
+		glVertex3f(0.5,-0.5,0.5);
 		glEnd();
     }
 
     void A() { mPos = Vector3(1, -2, -3); }
-    void B() { mRot = Vector3(0, 0, 0); }
+    void B() { mPos = Vector3(1, 1, -2); mScale.x = 2; }
 };
 
 int main() {
