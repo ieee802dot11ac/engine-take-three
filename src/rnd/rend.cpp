@@ -7,8 +7,10 @@
 #include <SDL2/SDL_opengl.h>
 #include <numbers>
 
-#define DEFAULT_W 1600
-#define DEFAULT_H 1200
+#define DEFAULT_W 1280
+#define DEFAULT_H 960
+
+bool Renderer::gDrawAxisHelpers = true;
 
 Renderer::Renderer() { 
 	mWindow = SDL_CreateWindow(
@@ -70,6 +72,9 @@ void Renderer::DoSceneDraws() {
 				glRotatef(rot.z, 0, 0, 1);
 				glScalef(scl.x, scl.y, scl.z);
 			});
+			if (gDrawAxisHelpers) {
+				DrawAxisHelper();
+			}
 			d->Draw();
 			glPopMatrix();
 		});
