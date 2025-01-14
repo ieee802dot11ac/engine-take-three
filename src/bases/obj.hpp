@@ -6,8 +6,8 @@
 #include <memory>
 
 // macros to make loading from disk easier
-// uses const char* due to not changing @ runtime, and thus can't have as many
-// handling bugs
+// uses const char* instead of std::string due to not changing @ runtime, and
+// thus can't have as many handling bugs. and i am NOT using a giant enum
 #define CLASS_NAME_CRUFT(name) \
 	static const char* StaticClassName() { static const char* cc = #name; return cc; }\
 	virtual const char* ClassName() const { return StaticClassName(); }
@@ -25,7 +25,7 @@ public:
 	virtual ~Object();
 	CLASS_NAME_CRUFT(Object)
 	virtual void Print(std::ostream&) const;
-//	virtual void Save(IStream&) const; // on hold until i figure out how to do type-safe binary saves/loads
+//	virtual void Save(IStream&) const; // on hold until i write a DirLoader clone
 //	virtual void Load(IStream&);
 
 	/// recursively searches mChildObjs to find an object. grabs the first node it finds with the matching name.
