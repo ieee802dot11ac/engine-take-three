@@ -33,9 +33,9 @@ public:
 	Object* FindByName(std::string name);
 
 	/// Reparents `this` to new_parent.
-	void Reparent(Object* new_parent);
 	void Reparent(std::shared_ptr<Object> new_parent);
-	
+
+	/// Recursively runs a function to `this` and to its children.	
 	void ApplyFuncToChildren(void (*)(Object*));
 	
 	// Create a new object from gObjectGenerators via the name given by cls_name.
@@ -51,11 +51,11 @@ public:
 
 
 	std::string mName;
-	std::shared_ptr<Object> mParent;
+	std::weak_ptr<Object> mParent;
 	std::vector<Object*> mChildObjs;
 };
 
 template <typename T>
 concept IsObj = std::is_base_of_v<T, Object> || std::is_same_v<T, Object>;
 
-extern std::shared_ptr<Object> gSceneRootNode;
+extern std::unique_ptr<Object> gSceneRootNode;
