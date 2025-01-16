@@ -14,5 +14,5 @@ public:
 	SDL_GLContext mContext;
 
 	static void ReinitPerspective(int w, int h, float fov);
-	static bool gDrawAxisHelpers;
+	static bool gDrawAxisHelpers, gWireframe;
 };

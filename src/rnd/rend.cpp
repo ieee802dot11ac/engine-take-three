@@ -10,7 +10,7 @@
 #define DEFAULT_W 1280
 #define DEFAULT_H 960
 
-bool Renderer::gDrawAxisHelpers = true;
+bool Renderer::gDrawAxisHelpers = true, Renderer::gWireframe = false;
 
 Renderer::Renderer() { 
 	mWindow = SDL_CreateWindow(
@@ -26,6 +26,8 @@ Renderer::Renderer() {
 
 	glViewport(0, 0, DEFAULT_W, DEFAULT_H);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glCullFace(GL_BACK);
+	glEnableClientState(GL_VERTEX_ARRAY);
 
 	EnableDepth();
 
@@ -46,6 +48,8 @@ Renderer::Renderer(int w, int h, std::string name) {
 
 	glViewport(0, 0, w, h);
 	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glCullFace(GL_BACK);
+	glEnableClientState(GL_VERTEX_ARRAY);
 
 	EnableDepth();
 
@@ -61,6 +65,11 @@ Renderer::~Renderer() {
 
 void Renderer::DoSceneDraws() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (gWireframe) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	} else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 	gSceneRootNode->ApplyFuncToChildren([](Object* o) -> void {
 		o->DoXIfIs<Drawable>([](Drawable* d) -> void {
 			glPushMatrix();
