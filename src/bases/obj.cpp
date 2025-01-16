@@ -17,7 +17,11 @@ Object::Object(const char* name) : mName(name), mParent() {}
 
 Object::~Object() {
 	for (Object* obj : mChildObjs) delete obj;
-	for (Object*& obj : mParent.lock()->mChildObjs) if (obj == this) obj = nullptr;
+	if (mParent.lock() != nullptr) {
+		for (Object*& obj : mParent.lock()->mChildObjs) {
+			if (obj == this) obj = nullptr;
+		}
+	}
 	mParent.reset();
 }
 
