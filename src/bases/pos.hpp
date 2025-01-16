@@ -2,6 +2,7 @@
 
 #include "bases/obj.hpp"
 #include "math/vec.hpp"
+#include "math/xfm.hpp"
 
 class Positionable : public virtual Object {
 public:
@@ -9,9 +10,7 @@ public:
     virtual ~Positionable();
     CLASS_NAME_CRUFT(Positionable)
     
-    Vector3 mPos;
-    Vector3 mRot;
-    Vector3 mScale;
+    Transform mTransform;
     bool mBillboarding; // forces rotation to match camera angle
 
     Vector3 WorldPos() const;

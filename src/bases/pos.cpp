@@ -1,15 +1,15 @@
 #include "pos.hpp"
 
-Positionable::Positionable() : mPos(0,0,0), mRot(0,0,0), mScale(1,1,1), mBillboarding(false) {}
+Positionable::Positionable() : mTransform(), mBillboarding(false) {}
 
 Positionable::~Positionable() {}
 
 Vector3 Positionable::WorldPos() const {
-    Vector3 v = mPos;
+    Vector3 v = mTransform.mPos;
     const Object* cur = (mParent.lock()).get();
     while (cur != nullptr) {
         if (cur->CanBecome<Positionable>()) {
-            v += dynamic_cast<const Positionable*>(cur)->mPos;
+            v += dynamic_cast<const Positionable*>(cur)->mTransform.mPos;
         }
         cur = (cur->mParent.lock()).get();
     }
@@ -17,11 +17,11 @@ Vector3 Positionable::WorldPos() const {
 }
 
 Vector3 Positionable::WorldRot() const {
-    Vector3 v = mRot;
+    Vector3 v = mTransform.mRot;
     const Object* cur = (mParent.lock()).get();
     while (cur != nullptr) {
         if (cur->CanBecome<Positionable>()) {
-            v += dynamic_cast<const Positionable*>(cur)->mRot;
+            v += dynamic_cast<const Positionable*>(cur)->mTransform.mRot;
         }
         cur = (cur->mParent.lock()).get();
     }
@@ -29,11 +29,11 @@ Vector3 Positionable::WorldRot() const {
 }
 
 Vector3 Positionable::WorldScl() const {
-    Vector3 v = mScale;
+    Vector3 v = mTransform.mScale;
     const Object* cur = (mParent.lock()).get();
     while (cur != nullptr) {
         if (cur->CanBecome<Positionable>()) {
-            v *= dynamic_cast<const Positionable*>(cur)->mScale;
+            v *= dynamic_cast<const Positionable*>(cur)->mTransform.mScale;
         }
         cur = (cur->mParent.lock()).get();
     }
