@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
+#include "math/vec.hpp"
+#include "rnd/mesh.hpp"
 #include "rnd/rend.hpp"
 
 int main() {
@@ -10,6 +12,15 @@ int main() {
     SDL_Init(SDL_INIT_EVERYTHING);
     atexit(SDL_Quit);
     
+    Mesh m;
+    m.mVerts.reserve(3);
+    m.mVerts[0] = Vtx(0,0,0,0,0,0,0,0);
+    m.mVerts[1] = Vtx(0,0,0,0,0,1,0,0);
+    m.mVerts[2] = Vtx(0,0,0,0,0,0,1,0);
+    m.mFaces.resize(1);
+    m.mFaces[0] = Face({0,1,2});
+    m.mTransform.mPos = Vector3(0, 0, -2);
+
     Renderer r;
     while (1) {
         SDL_Event e; // temp until i setup proper event handling

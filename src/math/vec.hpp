@@ -30,6 +30,7 @@ struct Vector2 {
 
 	const float& operator[](uint i) const { assert(i < 2); return *(&x + i); }
 	float& operator[](uint i){ assert(i < 2); return *(&x + i); }
+	operator const float*() const { return &x; }
 };
 
 struct Vector3 {
@@ -57,4 +58,5 @@ struct Vector3 {
 
 	const float& operator[](uint i) const { assert(i < 3); return *(&x + i); }
 	float& operator[](uint i){ assert(i < 3); return *(&x + i); }
+	operator const float*() const { return &x; }
 };
