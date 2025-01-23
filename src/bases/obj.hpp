@@ -56,7 +56,7 @@ public:
 
 
 	std::string mName;
-	std::weak_ptr<Object> mParent;
+	Object* mParent;
 	std::vector<Object*> mChildObjs;
 };
 

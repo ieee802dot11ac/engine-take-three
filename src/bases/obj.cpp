@@ -16,15 +16,13 @@ Object::Object() : mName("[unnamed]"), mParent() {}
 Object::Object(const char* name) : mName(name), mParent() {}
 
 Object::~Object() {
-	Object* parent = mParent.lock().get();
 	for (Object* obj : mChildObjs) delete obj;
-	if (parent != nullptr) {
-		std::vector<Object*>::const_iterator end = parent->mChildObjs.cend();
-		for (std::vector<Object*>::iterator obj = parent->mChildObjs.begin(); obj != end; obj++) {
-			if (*obj == this) parent->mChildObjs.erase(obj);
+	if (mParent != nullptr) {
+		std::vector<Object*>::const_iterator end = mParent->mChildObjs.cend();
+		for (std::vector<Object*>::iterator obj = mParent->mChildObjs.begin(); obj != end; obj++) {
+			if (*obj == this) mParent->mChildObjs.erase(obj);
 		}
 	}
-	mParent.reset();
 }
 
 void Object::Print(std::ostream& stream) const {
@@ -67,33 +65,31 @@ void Object::Load(IStream& strm) {
 } */
 
 void Object::Reparent(std::shared_ptr<Object>& new_parent) {
-	std::shared_ptr<Object> old_parent = mParent.lock();
-	if (old_parent != nullptr) {
-		for (std::vector<Object*>::iterator it = old_parent->mChildObjs.begin(); it != old_parent->mChildObjs.end(); it++) {
+	if (mParent != nullptr) {
+		for (std::vector<Object*>::iterator it = mParent->mChildObjs.begin(); it != mParent->mChildObjs.end(); it++) {
 			if (*it == this) {
-				old_parent->mChildObjs.erase(it);
+				mParent->mChildObjs.erase(it);
 				break;
 			}
 		}
 	}
 
-	mParent = new_parent;
-	if (new_parent != nullptr) mParent.lock()->mChildObjs.push_back(this);
+	mParent = new_parent.get();
+	if (new_parent != nullptr) mParent->mChildObjs.push_back(this);
 }
 
 void Object::Reparent(std::unique_ptr<Object>& new_parent) {
-	std::shared_ptr<Object> old_parent = mParent.lock();
-	if (old_parent != nullptr) {
-		for (std::vector<Object*>::iterator it = old_parent->mChildObjs.begin(); it != old_parent->mChildObjs.end(); it++) {
+	if (mParent != nullptr) {
+		for (std::vector<Object*>::iterator it = mParent->mChildObjs.begin(); it != mParent->mChildObjs.end(); it++) {
 			if (*it == this) {
-				old_parent->mChildObjs.erase(it);
+				mParent->mChildObjs.erase(it);
 				break;
 			}
 		}
 	}
 
-	mParent = std::shared_ptr<Object>(new_parent.get());
-	if (new_parent != nullptr) mParent.lock()->mChildObjs.push_back(this);
+	mParent = new_parent.get();
+	if (new_parent != nullptr) mParent->mChildObjs.push_back(this);
 }
 
 const Object* Object::FindByName(std::string name) const {

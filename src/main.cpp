@@ -8,18 +8,20 @@
 #include "rnd/mesh.hpp"
 #include "rnd/rend.hpp"
 
+static void CallClassIniters() {
+    Mesh::Init();
+}
+
 int main() {
     SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "engine initializing, commit " GIT_COMMIT_HASH);
     SDL_Init(SDL_INIT_EVERYTHING);
     atexit(SDL_Quit);
+    CallClassIniters();
 
+    Renderer r;
     
     Mesh m;
     m.Reparent(gSceneRootNode);
-    
-    Renderer r;
-
-    r.DoSceneDraws(); // debug
     
     m.mVerts.reserve(3);
     m.mVerts[0] = Vtx(0,0,0,0,0,0,0,0);

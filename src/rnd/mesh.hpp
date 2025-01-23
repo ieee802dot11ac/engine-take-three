@@ -8,8 +8,9 @@
 #include <cmath>
 #include <memory>
 #include <optional>
+#include <queue>
 
-struct alignas(32) Vtx { // this order seems weird, but it makes InterleavedArrays easier
+struct alignas(32) Vtx { // InterleavedArrays you have forced my hand
     float_t u, v; // 0x8
     float_t nx, ny, nz; // 0x14
     float_t x, y, z; // 0x20
@@ -43,7 +44,9 @@ public:
     std::vector<Vtx> mVerts;
     std::vector<Face> mFaces;
     std::shared_ptr<Texture> mTexture;
-    std::optional<uint> mDisplayListId; // nonvalue designates a dynamic mesh, i.e. has animations applied
+    std::optional<uint> mDisplayListId; // nonvalue designates a dynamic mesh, i.e. animates
 
-    static uint display_list_num;
+    static std::queue<uint> sDisplayListIds;
+
+    static void Init();
 };

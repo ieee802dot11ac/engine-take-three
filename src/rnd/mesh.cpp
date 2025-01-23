@@ -2,15 +2,24 @@
 #include "SDL2/SDL_opengl.h"
 #include <cstring>
 
-uint Mesh::display_list_num = 0;
+std::queue<uint> Mesh::sDisplayListIds;
+
+void Mesh::Init() {
+    constexpr uint list_siz = 1024;
+
+    uint list_start_idx = glGenLists(list_siz);
+
+    for (uint i = list_start_idx; i < list_start_idx + list_siz; i++) {
+        sDisplayListIds.push(i);
+    }
+}
 
 Mesh::Mesh() : mVerts(0), mFaces(0), mTexture(nullptr), mDisplayListId(std::nullopt) {}
 
 Mesh::~Mesh() {
     mTexture.reset();
     if (mDisplayListId.has_value() && glIsList(mDisplayListId.value())) {
-        glDeleteLists(mDisplayListId.value(), 1);
-        if (mDisplayListId.value() == display_list_num) display_list_num--;
+        sDisplayListIds.push(mDisplayListId.value());
     }
 }
 
@@ -40,8 +49,7 @@ void Mesh::Draw() {
 }
 
 void Mesh::InitDisplayList() {
-    glNewList(display_list_num++, GL_COMPILE);
-    mDisplayListId = display_list_num;
+    mDisplayListId = sDisplayListIds.front(); sDisplayListIds.pop();
 
     glInterleavedArrays(GL_T2F_N3F_V3F, 0, mVerts.data());
 
@@ -50,7 +58,7 @@ void Mesh::InitDisplayList() {
         glActiveTexture(mTexture->texture_id);
     }
 
-    glDrawElements(GL_TRIANGLES, mFaces.size(), GL_UNSIGNED_SHORT, mFaces.data());
+    glDrawElements(GL_TRIANGLES, mFaces.size() * 3, GL_UNSIGNED_SHORT, mFaces.data());
     
     glDisable(GL_TEXTURE_2D);
     glEndList();
