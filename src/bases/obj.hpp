@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <SDL2/SDL_assert.h>
 
 // macros to make loading from disk easier
 // uses const char* instead of std::string due to not changing @ runtime, and
@@ -33,7 +34,8 @@ public:
 	Object* FindByName(std::string name);
 
 	/// Reparents `this` to new_parent.
-	void Reparent(std::shared_ptr<Object> new_parent);
+	void Reparent(std::unique_ptr<Object>& new_parent);
+	void Reparent(std::shared_ptr<Object>& new_parent);
 
 	/// Recursively runs a function to `this` and to its children.	
 	void ApplyFuncToChildren(void (*)(Object*));
@@ -44,10 +46,13 @@ public:
 	static std::unordered_map<const char*, ObjFunc> gObjectGenerators; 
 
 	template <typename T>
-	bool CanBecome() const { if (dynamic_cast<const T*>(this) != NULL) return true; else return false; }
+	bool CanBecome() const { 
+		const Object* o = this; SDL_assert(o != nullptr); 
+		if (dynamic_cast<const T*>(this) != NULL) return true; else return false; 
+	}
 
 	template <typename T>
-	void DoXIfIs(void (*func)(T*)) { T* obj = dynamic_cast<T*>(this); if (obj != nullptr) func(obj); }
+	void DoXIfIs(void (*func)(T*)) { Object* o = this; SDL_assert(o != nullptr); T* obj = dynamic_cast<T*>(this); if (obj != nullptr) func(obj); }
 
 
 	std::string mName;

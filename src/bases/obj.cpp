@@ -16,10 +16,12 @@ Object::Object() : mName("[unnamed]"), mParent() {}
 Object::Object(const char* name) : mName(name), mParent() {}
 
 Object::~Object() {
+	Object* parent = mParent.lock().get();
 	for (Object* obj : mChildObjs) delete obj;
-	if (mParent.lock() != nullptr) {
-		for (Object*& obj : mParent.lock()->mChildObjs) {
-			if (obj == this) obj = nullptr;
+	if (parent != nullptr) {
+		std::vector<Object*>::const_iterator end = parent->mChildObjs.cend();
+		for (std::vector<Object*>::iterator obj = parent->mChildObjs.begin(); obj != end; obj++) {
+			if (*obj == this) parent->mChildObjs.erase(obj);
 		}
 	}
 	mParent.reset();
@@ -64,7 +66,7 @@ void Object::Load(IStream& strm) {
 	strm >> mChildObjs;
 } */
 
-void Object::Reparent(std::shared_ptr<Object> new_parent) {
+void Object::Reparent(std::shared_ptr<Object>& new_parent) {
 	std::shared_ptr<Object> old_parent = mParent.lock();
 	if (old_parent != nullptr) {
 		for (std::vector<Object*>::iterator it = old_parent->mChildObjs.begin(); it != old_parent->mChildObjs.end(); it++) {
@@ -76,7 +78,22 @@ void Object::Reparent(std::shared_ptr<Object> new_parent) {
 	}
 
 	mParent = new_parent;
-	mParent.lock()->mChildObjs.push_back(this);
+	if (new_parent != nullptr) mParent.lock()->mChildObjs.push_back(this);
+}
+
+void Object::Reparent(std::unique_ptr<Object>& new_parent) {
+	std::shared_ptr<Object> old_parent = mParent.lock();
+	if (old_parent != nullptr) {
+		for (std::vector<Object*>::iterator it = old_parent->mChildObjs.begin(); it != old_parent->mChildObjs.end(); it++) {
+			if (*it == this) {
+				old_parent->mChildObjs.erase(it);
+				break;
+			}
+		}
+	}
+
+	mParent = std::shared_ptr<Object>(new_parent.get());
+	if (new_parent != nullptr) mParent.lock()->mChildObjs.push_back(this);
 }
 
 const Object* Object::FindByName(std::string name) const {
@@ -106,12 +123,11 @@ Object* Object::FindByName(std::string name) {
 }
 
 void Object::ApplyFuncToChildren(void (*func)(Object *)) {
-	if (mChildObjs.empty()) goto skip_childen;
+	func(dynamic_cast<Object*>(this));
+	if (mChildObjs.empty()) return;
 	for (Object* child : mChildObjs) {
 		child->ApplyFuncToChildren(func);
 	}
-skip_childen:
-	func(this);
 }
 
 Object* Object::New(std::string cls_name) {
