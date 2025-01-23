@@ -45,7 +45,7 @@ execute_process(
 if(MSVC)
   target_compile_options(engine PRIVATE /W4 /WX)
 else()
-  target_compile_options(engine PRIVATE -Wall -Wextra -Wpedantic -Werror)
+  target_compile_options(engine PRIVATE -Wall -Wextra -Wpedantic -Werror -gdwarf-5)
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
