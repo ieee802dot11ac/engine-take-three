@@ -65,14 +65,15 @@ Renderer::~Renderer() {
 
 void Renderer::DoSceneDraws() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (gWireframe) {
+/*	if (gWireframe) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	} else {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
+	}*/
 	gSceneRootNode->ApplyFuncToChildren([](Object* o) -> void {
-		o->DoXIfIs<Drawable>([](Drawable* d) -> void {
-			glPushMatrix();
+		SDL_assert(o != nullptr);
+		o->DoXIfIs<Drawable>([](Drawable*) -> void {
+/*			glPushMatrix();
 			d->DoXIfIs<Positionable>([](Positionable* p) -> void {
 				Vector3 pos = p->WorldPos(), rot = p->WorldRot(), scl = p->WorldScl();
 				glTranslatef(pos.x, pos.y, pos.z);
@@ -80,12 +81,12 @@ void Renderer::DoSceneDraws() {
 				glRotatef(rot.y, 0, 1, 0);
 				glRotatef(rot.z, 0, 0, 1);
 				glScalef(scl.x, scl.y, scl.z);
+				if (gDrawAxisHelpers) {
+					DrawAxisHelper();
+				}
 			});
-			if (gDrawAxisHelpers) {
-				DrawAxisHelper();
-			}
 			d->Draw();
-			glPopMatrix();
+			glPopMatrix();*/
 		});
 	});
 	SDL_GL_SwapWindow(mWindow);

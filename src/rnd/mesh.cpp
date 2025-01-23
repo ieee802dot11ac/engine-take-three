@@ -22,6 +22,7 @@ void Mesh::Draw() {
             glEnable(GL_TEXTURE_2D);
             glActiveTexture(mTexture->texture_id);
         }
+        glColor3f(0.7, 0.7, 0.7);
         for (const Face& f : mFaces) {
             Vtx& v0 = mVerts[f[0]], v1 = mVerts[f[1]], v2 = mVerts[f[2]];
             glTexCoord2fv(*v0.Uv());
