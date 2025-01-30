@@ -29,7 +29,7 @@ void Mesh::Draw() {
     } else {
         if (mTexture.get() != nullptr) {
             glEnable(GL_TEXTURE_2D);
-            glActiveTexture(mTexture->texture_id);
+            mTexture->Activate();
         }
         glColor3f(0.7, 0.7, 0.7);
         for (const Face& f : mFaces) {
@@ -51,11 +51,13 @@ void Mesh::Draw() {
 void Mesh::InitDisplayList() {
     mDisplayListId = sDisplayListIds.front(); sDisplayListIds.pop();
 
+    glNewList(mDisplayListId.value(), GL_COMPILE);
+
     glInterleavedArrays(GL_T2F_N3F_V3F, 0, mVerts.data());
 
     if (mTexture.get() != nullptr) {
         glEnable(GL_TEXTURE_2D);
-        glActiveTexture(mTexture->texture_id);
+        mTexture->Activate();
     }
 
     glDrawElements(GL_TRIANGLES, mFaces.size() * 3, GL_UNSIGNED_SHORT, mFaces.data());
