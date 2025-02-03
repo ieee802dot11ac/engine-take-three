@@ -17,6 +17,8 @@ void Texture::Init() {
 Texture::Texture() : w(0), h(0), bpp(32), palette(NULL), img(NULL) {
     texture_id = sTextureIds.front(); sTextureIds.pop();
     glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 Texture::~Texture() {
