@@ -12,27 +12,7 @@
 
 bool Renderer::gDrawAxisHelpers = true, Renderer::gWireframe = false;
 
-Renderer::Renderer() { 
-	mWindow = SDL_CreateWindow(
-		"Engine", 
-		SDL_WINDOWPOS_CENTERED, 
-		SDL_WINDOWPOS_CENTERED, 
-		DEFAULT_W, 
-		DEFAULT_H, 
-		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
-		);
-	mContext = SDL_GL_CreateContext(mWindow);
-	SDL_GL_SetSwapInterval(1);
-
-	glViewport(0, 0, DEFAULT_W, DEFAULT_H);
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glCullFace(GL_BACK);
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	EnableDepth();
-
-	ReinitPerspective(DEFAULT_W, DEFAULT_H, 100);
-}
+Renderer::Renderer() : Renderer(DEFAULT_W, DEFAULT_H, "Engine") { }
 
 Renderer::Renderer(int w, int h, std::string name) {
 	mWindow = SDL_CreateWindow(
@@ -47,7 +27,7 @@ Renderer::Renderer(int w, int h, std::string name) {
 	SDL_GL_SetSwapInterval(1);
 
 	glViewport(0, 0, w, h);
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0, 0, 0, 1.0);
 	glCullFace(GL_BACK);
 	glEnableClientState(GL_VERTEX_ARRAY);
 

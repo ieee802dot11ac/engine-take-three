@@ -31,22 +31,24 @@ int main() {
 	m.mTexture.reset(t);
 
 	{
-		uint8_t test_tex[16] = {
-			0x00, 0xFF, 0x00, 0xFF,
-			0xFF, 0x00, 0xFF, 0x00,
-			0x00, 0xFF, 0x00, 0xFF,
-			0xFF, 0x00, 0xFF, 0x00,
+		uint32_t test_tex[16] = {
+			0x000000FF, 0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF,
+			0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF, 0x000000FF,
+			0x000000FF, 0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF,
+			0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF, 0x000000FF,
 		};
 		t->Activate();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R3_G3_B2, 4, 4, 0, GL_RGB, GL_UNSIGNED_BYTE_2_3_3_REV, test_tex);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 4, 4, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, test_tex);
 	}
 
-	m.mVerts.reserve(3);
+	m.mVerts.reserve(4);
 	m.mVerts[0] = Vtx(0,0,0,0,0,0,0,0);
-	m.mVerts[1] = Vtx(2,0,0,0,0,2,0,0);
-	m.mVerts[2] = Vtx(0,2,0,0,0,0,2,0);
-	m.mFaces.resize(1);
+	m.mVerts[1] = Vtx(1,0,0,0,0,2,0,0);
+	m.mVerts[2] = Vtx(0,1,0,0,0,0,2,0);
+	m.mVerts[3] = Vtx(1,1,0,0,0,2,2,0);
+	m.mFaces.resize(2);
 	m.mFaces[0] = Face({0,1,2});
+	m.mFaces[1] = Face({1,3,2});
 	m.mTransform.mPos = Vector3(0, 0, -2);
 	m.mTransform.mRot = Vector3(0, 0, 0);
 	m.InitDisplayList();
@@ -57,7 +59,8 @@ int main() {
 			if (e.type == SDL_QUIT) goto exit_now;
 		}
 		SDL_FlushEvents(1, -1);
-		//m.mTransform.mRot.z += 3;
+		m.mTransform.mRot.x += 3;
+		m.mTransform.mRot.y -= 3;
 		r.DoSceneDraws();
 
 		GLenum err = glGetError();

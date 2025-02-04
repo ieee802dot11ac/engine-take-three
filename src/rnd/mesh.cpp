@@ -1,5 +1,5 @@
 #include "mesh.hpp"
-#include "SDL2/SDL_opengl.h"
+#include <SDL2/SDL_opengl.h>
 #include <cstring>
 
 std::queue<uint> Mesh::sDisplayListIds;
@@ -48,6 +48,7 @@ void Mesh::Draw() {
 }
 
 void Mesh::InitDisplayList() {
+    if (mDisplayListId.has_value()) { sDisplayListIds.push(mDisplayListId.value()); }
     mDisplayListId = sDisplayListIds.front(); sDisplayListIds.pop();
 
     glNewList(mDisplayListId.value(), GL_COMPILE);
