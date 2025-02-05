@@ -8,7 +8,6 @@
 
 class IStream {
 public:
-    virtual ~IStream() = 0;
     virtual void ReadImpl(size_t size, void* buf) = 0;
     virtual void WriteImpl(size_t size, const void* buf) = 0;
 
