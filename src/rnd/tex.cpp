@@ -38,11 +38,11 @@ void Texture::LoadTextFile(std::istream stream) {
     while (!stream.eof()) {
         char linebuf[64] = {0};
         stream.getline(linebuf, 63);
-        uint num_buf = 0; char key_buf[64] = {0}; char filekey_buf[256] = {0};
-        if (sscanf(linebuf, "%s %u", key_buf, &num_buf) == 2) {
+        uint num_buf = 0; char key_buf[64] = {0}; char filename_buf[256] = {0};
+        if (sscanf(linebuf, "%s %u\n", key_buf, &num_buf) == 2) {
             if (strcasecmp(key_buf, "width") == 0) w = num_buf;
             else if (strcasecmp(key_buf, "height") == 0) h = num_buf;
-        } else if (sscanf(linebuf, "%s %s", key_buf, filekey_buf) == 2) {
+        } else if (sscanf(linebuf, "%s %s\n", key_buf, filename_buf) == 2) {
             if (strcasecmp(key_buf, "filename") == 0) {
                 // TODO track down external file, load compressed data
             }
