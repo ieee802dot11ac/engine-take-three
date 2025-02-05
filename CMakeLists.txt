@@ -21,6 +21,7 @@ add_executable(engine ${SRC_FILES} ${INC_FILES})
 
 # Grab SDL & OpenGL
 find_library(SDL_LIB SDL2)
+find_library(SDLIMG_LIB SDL2_image)
 find_library(GL_LIB GL)
 find_library(MAFS m)
 
@@ -51,4 +52,4 @@ endif()
 target_compile_definitions(${PROJECT_NAME} PRIVATE
         "-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
 
-target_link_libraries(engine PRIVATE "${SDL_LIB}" "${GL_LIB}" "${MAFS}")
+target_link_libraries(engine PRIVATE "${SDL_LIB}" "${SDLIMG_LIB}" "${GL_LIB}" "${MAFS}")
