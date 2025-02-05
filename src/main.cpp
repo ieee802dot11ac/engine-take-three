@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_opengl.h>
 
 #include "bases/obj.hpp"
@@ -19,6 +20,8 @@ int main() {
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "engine initializing, commit " GIT_COMMIT_HASH);
 	SDL_Init(SDL_INIT_EVERYTHING);
 	atexit(SDL_Quit);
+	IMG_Init(IMG_INIT_PNG | IMG_INIT_JXL);
+	atexit(IMG_Quit);
 
 	Renderer r;
 

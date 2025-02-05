@@ -1,5 +1,6 @@
 #pragma once
+#include <cstdint>
 
 struct Color {
-    char r, g, b, a;
+    uint8_t r, g, b, a;
 };
