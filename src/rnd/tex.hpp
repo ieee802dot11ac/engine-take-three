@@ -1,11 +1,12 @@
 #pragma once
 
-#include "iface/istream.hpp"
-#include "math/color.hpp"
 #include <bit>
+#include <istream>
+#include <cmath>
 #include <queue>
 #include <cstdint>
-#include <cmath>
+
+#include "math/color.hpp"
 
 class Texture {
 public:
@@ -31,8 +32,7 @@ public:
 	Texture();
 	~Texture();
 
-	void Load(IStream& stream);
-	void Save(IStream& stream);
+	void LoadTextFile(std::istream stream);
 	void Activate();
 
 	uint16_t w;
