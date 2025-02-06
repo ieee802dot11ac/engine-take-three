@@ -45,7 +45,7 @@ public:
 	~Texture();
 
 	void LoadFromSurface(SDL_Surface* src_img);
-	void LoadTextFile(std::istream stream);
+	void LoadTextFile(std::istream& stream);
 	void Activate();
 
 	uint16_t w;

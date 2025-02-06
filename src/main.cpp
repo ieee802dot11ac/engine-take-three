@@ -1,5 +1,7 @@
+#include <SDL2/SDL_log.h>
 #include <cstdio>
 #include <cstdlib>
+#include <fstream>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -33,16 +35,8 @@ int main() {
 	Texture* t = new Texture;
 	m.mTexture.reset(t);
 
-	{
-		uint32_t test_tex[16] = {
-			0x000000FF, 0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF,
-			0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF, 0x000000FF,
-			0x000000FF, 0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF,
-			0xFFFFFFFF, 0x000000FF, 0xFFFFFFFF, 0x000000FF,
-		};
-		t->Activate();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 4, 4, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, test_tex);
-	}
+	std::ifstream f("test.img_txt");
+	t->LoadTextFile(f);
 
 	m.mVerts.reserve(4);
 	m.mVerts[0] = Vtx(0,0,0,0,0,0,0,0);
@@ -62,8 +56,8 @@ int main() {
 			if (e.type == SDL_QUIT) goto exit_now;
 		}
 		SDL_FlushEvents(1, -1);
-		m.mTransform.mRot.x += 3;
-		m.mTransform.mRot.y -= 3;
+		//m.mTransform.mRot.x += 3;
+		//m.mTransform.mRot.y -= 3;
 		r.DoSceneDraws();
 
 		GLenum err = glGetError();
