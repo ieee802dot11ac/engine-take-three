@@ -28,6 +28,9 @@ struct Vector2 {
 	Vector2 operator*(float rhs) const { Vector2 v(x * rhs, y * rhs); return v; }
 	Vector2 operator/(float rhs) const { Vector2 v(x / rhs, y / rhs); return v; }
 
+	bool operator==(const Vector2& rhs) const { return x == rhs.x && y == rhs.y; }
+	bool operator!=(const Vector2& rhs) const { return !(*this == rhs); }
+
 	const float& operator[](uint i) const { assert(i < 2); return *(&x + i); }
 	float& operator[](uint i){ assert(i < 2); return *(&x + i); }
 	operator const float*() const { return &x; }
@@ -55,6 +58,9 @@ struct Vector3 {
 	Vector3 operator-(float rhs) const { Vector3 v(x - rhs, y - rhs, z - rhs); return v; }
 	Vector3 operator*(float rhs) const { Vector3 v(x * rhs, y * rhs, z * rhs); return v; }
 	Vector3 operator/(float rhs) const { Vector3 v(x / rhs, y / rhs, z / rhs); return v; }
+
+	bool operator==(const Vector3& rhs) const { return x == rhs.x && y == rhs.y && z == rhs.z; }
+	bool operator!=(const Vector3& rhs) const { return !(*this == rhs); }
 
 	const float& operator[](uint i) const { assert(i < 3); return *(&x + i); }
 	float& operator[](uint i){ assert(i < 3); return *(&x + i); }
