@@ -60,6 +60,7 @@ void Texture::LoadFromSurface(SDL_Surface* src_img) {
     };
     assert(palette == nullptr);
     assert(img == nullptr);
+    w = src_img->w; h = src_img->h;
     pixel_fmt = sdl_fmt_to_pixfmt.at(src_img->format->format);
     if (IsPaletted() && src_img->format->palette != nullptr) {
         if (src_img->format->palette->ncolors > 256) {
@@ -81,7 +82,7 @@ void Texture::LoadFromSurface(SDL_Surface* src_img) {
 
     // certified OGL moment
     uint8_t* temp_row = new uint8_t[src_img->pitch];
-    for (int i = h-1, j = 0; i > h/2; i--, j++) {
+    for (int i = h-1, j = 0; i > (h/2) - 1; i--, j++) {
         memcpy(temp_row, &((uint8_t*)img)[i * src_img->pitch], src_img->pitch);
         memcpy(&((uint8_t*)img)[i * src_img->pitch], &((uint8_t*)img)[j * src_img->pitch], src_img->pitch);
         memcpy(&((uint8_t*)img)[j * src_img->pitch], temp_row, src_img->pitch);
@@ -100,34 +101,6 @@ void Texture::LoadFromSurface(SDL_Surface* src_img) {
         format.gl_type,
         img
     );
-}
-
-/* format:
-width 64
-height 64
-filename ./res/test.png
-*/
-
-void Texture::LoadTextFile(std::istream& stream) {
-    while (!stream.eof()) {
-        char linebuf[64] = {0};
-        stream.getline(linebuf, 63);
-        uint num_buf = 0; char key_buf[64] = {0}; char filename_buf[256] = {0};
-        if (sscanf(linebuf, "%s %u\n", key_buf, &num_buf) == 2) {
-            if (strcasecmp(key_buf, "width") == 0) w = num_buf;
-            else if (strcasecmp(key_buf, "height") == 0) h = num_buf;
-        } else if (sscanf(linebuf, "%s %s\n", key_buf, filename_buf) == 2) {
-            if (strcasecmp(key_buf, "filename") == 0) {
-                SDL_LogDebug(SDL_LOG_CATEGORY_RENDER, "loading image %s\n", filename_buf);
-                SDL_Surface* img = IMG_Load(filename_buf);
-                SDL_Surface* img_fixed = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_ABGR32, 0);
-                SDL_FreeSurface(img);
-                LoadFromSurface(img_fixed);
-                SDL_FreeSurface(img_fixed);
-                return;
-            }
-        }
-    }
 }
 
 void Texture::Activate() {

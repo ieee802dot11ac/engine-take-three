@@ -1,7 +1,6 @@
 #pragma once
 
 #include <bit>
-#include <istream>
 #include <cmath>
 #include <queue>
 #include <cstdint>
@@ -15,7 +14,7 @@
 class Texture {
 public:
 
-	enum PixFmt { // >0x10 means nonlinear/unorthodox storage
+	enum PixFmt { // >0x10 means non-uniform/unorthodox storage
 		Idx4	= 0x00,
 		Idx8	= 0x01,
 		Rgb5	= 0x02,
@@ -45,7 +44,6 @@ public:
 	~Texture();
 
 	void LoadFromSurface(SDL_Surface* src_img);
-	void LoadTextFile(std::istream& stream);
 	void Activate();
 
 	uint16_t w;

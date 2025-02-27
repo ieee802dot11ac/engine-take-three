@@ -1,3 +1,4 @@
+#include "bases/obj.hpp"
 #include "math/vec.hpp"
 #include <iostream>
 #include <cassert>
@@ -39,4 +40,11 @@ void do_tests() {
         FUNNY_ASSERT(Vector3(5, 0, 0).Length() == 5);
         FUNNY_ASSERT(Vector3(8, 234, 6022)[2] == 6022);
     } ENDTEST(vec_ops)
+
+    TEST(obj) {
+        FUNNY_ASSERT(Object().mName == "[unnamed]");
+        FUNNY_ASSERT(Object("Test").mName == "Test");
+        FUNNY_ASSERT(Object().FindByName("Nonexistent") == nullptr);
+        FUNNY_ASSERT(Object().CanBecome<Vector2>() == false);
+    } ENDTEST (obj)
 }

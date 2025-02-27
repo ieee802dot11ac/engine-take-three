@@ -46,9 +46,9 @@ Renderer::~Renderer() {
 void Renderer::DoSceneDraws() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gWireframe) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT, GL_LINE);
 	} else {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT, GL_FILL);
 	}
 	gSceneRootNode->ApplyFuncToChildren([](Object* o) -> void {
 		SDL_assert(o != nullptr);
