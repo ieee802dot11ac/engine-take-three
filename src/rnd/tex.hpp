@@ -9,6 +9,7 @@
 #include <SDL2/SDL_opengl.h>
 #include <SDL2/SDL_surface.h>
 
+#include "iface/istream.hpp"
 #include "math/color.hpp"
 
 class Texture {
@@ -45,6 +46,8 @@ public:
 
 	void LoadFromSurface(SDL_Surface* src_img);
 	void Activate();
+	void Save(IStream&) const;
+	void Load(IStream&);
 
 	uint16_t w;
 	uint16_t h;
