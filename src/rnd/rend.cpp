@@ -3,8 +3,8 @@
 #include "bases/obj.hpp"
 #include "bases/pos.hpp"
 #include "rnd/utl.hpp"
-#include <SDL2/SDL_video.h>
 #include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_video.h>
 #include <numbers>
 
 #define DEFAULT_W 1280
@@ -12,17 +12,12 @@
 
 bool Renderer::gDrawAxisHelpers = true, Renderer::gWireframe = false;
 
-Renderer::Renderer() : Renderer(DEFAULT_W, DEFAULT_H, "Engine") { }
+Renderer::Renderer() : Renderer(DEFAULT_W, DEFAULT_H, "Engine") {}
 
 Renderer::Renderer(int w, int h, std::string name) {
-	mWindow = SDL_CreateWindow(
-		name.c_str(), 
-		SDL_WINDOWPOS_CENTERED, 
-		SDL_WINDOWPOS_CENTERED, 
-		w, 
-		h, 
-		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
-		);
+	mWindow = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED,
+							   SDL_WINDOWPOS_CENTERED, w, h,
+							   SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	mContext = SDL_GL_CreateContext(mWindow);
 	SDL_GL_SetSwapInterval(1);
 
@@ -50,12 +45,13 @@ void Renderer::DoSceneDraws() {
 	} else {
 		glPolygonMode(GL_FRONT, GL_FILL);
 	}
-	gSceneRootNode->ApplyFuncToChildren([](Object* o) -> void {
+	gSceneRootNode->ApplyFuncToChildren([](Object *o) -> void {
 		SDL_assert(o != nullptr);
-		o->DoXIfIs<Drawable>([](Drawable* d) -> void {
+		o->DoXIfIs<Drawable>([](Drawable *d) -> void {
 			glPushMatrix();
-			d->DoXIfIs<Positionable>([](Positionable* p) -> void {
-				Vector3 pos = p->WorldPos(), rot = p->WorldRot(), scl = p->WorldScl();
+			d->DoXIfIs<Positionable>([](Positionable *p) -> void {
+				Vector3 pos = p->WorldPos(), rot = p->WorldRot(),
+						scl = p->WorldScl();
 				glTranslatef(pos.x, pos.y, pos.z);
 				glRotatef(rot.x, 1, 0, 0);
 				glRotatef(rot.y, 0, 1, 0);
@@ -65,7 +61,7 @@ void Renderer::DoSceneDraws() {
 					DrawAxisHelper();
 				}
 			});
-			d->Draw();
+			d->Draw(); // issue: i need to rework this to use messages
 			glPopMatrix();
 		});
 	});
@@ -77,9 +73,9 @@ void Renderer::ReinitPerspective(int w, int h, float fov) {
 	const float near = 0.1;
 	const float far = 1000;
 
-	float tangent = SDL_tan(fov/2 * DEG2RAD);	// tangent of half fovY
+	float tangent = SDL_tan(fov / 2 * DEG2RAD); // tangent of half fovY
 	float top = near * tangent;					// half height of near plane
-	float right = top * (float(w)/float(h));	// half width of near plane
+	float right = top * (float(w) / float(h));	// half width of near plane
 
 	glMatrixMode(GL_PROJECTION);
 	glFrustum(-right, right, -top, top, near, far);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bases/msg.hpp"
 #include <SDL2/SDL_assert.h>
 #include <memory>
 #include <ostream>
@@ -40,6 +41,7 @@ class Object {
 	//	virtual void Save(IStream&) const; // on hold until i write a DirLoader
 	// clone
 	// virtual void Load(IStream&);
+	virtual void OnMsg(Message &);
 
 	/// recursively searches mChildObjs to find an object. grabs the first node
 	/// it finds with the matching name.
