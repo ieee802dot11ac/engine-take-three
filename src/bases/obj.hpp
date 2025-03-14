@@ -1,63 +1,87 @@
 #pragma once
 
+#include <SDL2/SDL_assert.h>
+#include <memory>
 #include <ostream>
 #include <unordered_map>
 #include <vector>
-#include <memory>
-#include <SDL2/SDL_assert.h>
 
 // macros to make loading from disk easier
 // uses const char* instead of std::string due to not changing @ runtime, and
 // thus can't have as many handling bugs. and i am NOT using a giant enum
-#define CLASS_NAME_CRUFT(name) \
-	static const char* StaticClassName() { static const char* cc = #name; return cc; }\
-	virtual const char* ClassName() const { return StaticClassName(); }
+#define CLASS_NAME_CRUFT(name)                                                 \
+	static const char *StaticClassName() {                                     \
+		static const char *cc = #name;                                         \
+		return cc;                                                             \
+	}                                                                          \
+	virtual const char *ClassName() const { return StaticClassName(); }
+
+#define NEW_OBJECT(cls)                                                        \
+	static Object *NewObject() { return new cls; }
+
+#define REGISTER                                                               \
+	static void Register() {                                                   \
+		Object::gObjectGenerators.emplace(StaticClassName(), NewObject);       \
+	}
 
 class IStream;
 
-typedef class Object* (*ObjFunc)(void);
+typedef class Object *(*ObjFunc)(void);
 
 /** A basic object. Can be used in the scene hierarchy. */
 class Object {
-public:
+  public:
 	Object();
-	Object(const char* name);
-	Object(const Object&&) = delete;
+	Object(const char *name);
+	Object(const Object &&) = delete;
 	virtual ~Object();
 	CLASS_NAME_CRUFT(Object)
-	virtual void Print(std::ostream&) const;
-//	virtual void Save(IStream&) const; // on hold until i write a DirLoader clone
-//	virtual void Load(IStream&);
+	virtual void Print(std::ostream &) const;
+	//	virtual void Save(IStream&) const; // on hold until i write a DirLoader
+	// clone
+	// virtual void Load(IStream&);
 
-	/// recursively searches mChildObjs to find an object. grabs the first node it finds with the matching name.
-	const Object* FindByName(std::string name) const;
-	Object* FindByName(std::string name);
+	/// recursively searches mChildObjs to find an object. grabs the first node
+	/// it finds with the matching name.
+	const Object *FindByName(std::string name) const;
+	Object *FindByName(std::string name);
 
 	/// Reparents `this` to new_parent.
-	void Reparent(std::unique_ptr<Object>& new_parent);
-	void Reparent(std::shared_ptr<Object>& new_parent);
+	void Reparent(std::unique_ptr<Object> &new_parent);
+	void Reparent(std::shared_ptr<Object> &new_parent);
 
-	/// Recursively runs a function to `this` and to its children.	
-	void ApplyFuncToChildren(void (*)(Object*));
-	
-	// Create a new object from gObjectGenerators via the name given by cls_name.
-	Object* New(std::string cls_name);
+	/// Recursively runs a function to `this` and to its children.
+	void ApplyFuncToChildren(void (*)(Object *));
 
-	static std::unordered_map<const char*, ObjFunc> gObjectGenerators; 
+	// Create a new object from gObjectGenerators via the name given by
+	// cls_name.
+	Object *New(std::string cls_name);
 
-	template <typename T>
-	bool CanBecome() const { 
-		const Object* o = this; SDL_assert(o != nullptr); 
-		if (dynamic_cast<const T*>(this) != NULL) return true; else return false; 
+	static std::unordered_map<const char *, ObjFunc> gObjectGenerators;
+
+	template <typename T> bool CanBecome() const {
+		const Object *o = this;
+		SDL_assert(o != nullptr);
+		if (dynamic_cast<const T *>(this) != NULL)
+			return true;
+		else
+			return false;
 	}
 
-	template <typename T>
-	void DoXIfIs(void (*func)(T*)) { Object* o = this; SDL_assert(o != nullptr); T* obj = dynamic_cast<T*>(this); if (obj != nullptr) func(obj); }
-
+	template <typename T> void DoXIfIs(void (*func)(T *)) {
+		Object *o = this;
+		SDL_assert(o != nullptr);
+		T *obj = dynamic_cast<T *>(this);
+		if (obj != nullptr)
+			func(obj);
+	}
 
 	std::string mName;
-	Object* mParent;
-	std::vector<Object*> mChildObjs;
+	Object *mParent;
+	std::vector<Object *> mChildObjs;
+
+	NEW_OBJECT(Object)
+	REGISTER
 };
 
 template <typename T>

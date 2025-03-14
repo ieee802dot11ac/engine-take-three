@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 	atexit(SDL_Quit);
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_JXL);
 	atexit(IMG_Quit);
-	if (argc != 1 && strcmp(argv[1], "--test") == 0) { 
+	if (argc > 1 && strcmp(argv[1], "--test") == 0) { 
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "DOING TESTS"); 
 		CallClassIniters(); 
 		do_tests(); 
