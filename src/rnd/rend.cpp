@@ -50,13 +50,7 @@ void Renderer::DoSceneDraws() {
 		o->DoXIfIs<Drawable>([](Drawable *d) -> void {
 			glPushMatrix();
 			d->DoXIfIs<Positionable>([](Positionable *p) -> void {
-				Vector3 pos = p->WorldPos(), rot = p->WorldRot(),
-						scl = p->WorldScl();
-				glTranslatef(pos.x, pos.y, pos.z);
-				glRotatef(rot.x, 1, 0, 0);
-				glRotatef(rot.y, 0, 1, 0);
-				glRotatef(rot.z, 0, 0, 1);
-				glScalef(scl.x, scl.y, scl.z);
+				ApplyXfm(p->WorldXfm());
 				if (gDrawAxisHelpers) {
 					DrawAxisHelper();
 				}

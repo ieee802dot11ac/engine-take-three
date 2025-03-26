@@ -6,3 +6,10 @@ TabWidth: 4
 UseCRLF: false
 UseTab: Always
 ColumnLimit: 80
+StatementMacros:
+  - REGISTER
+  - NEW_OBJECT
+  - FUNNY_ASSERT
+  - TEST
+  - ENDTEST
+
