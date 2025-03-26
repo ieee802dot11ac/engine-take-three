@@ -21,7 +21,8 @@ struct Message {
 		kDraw,		   // propagates draw calls; (void)
 		kInputDigital, // input handling; (int inputId, int upOrDown)
 		kInputAnalog,  // input handling; (int inputId, float newVal)
-		kTranslate,	   // movement/rotation; (float pos[3], float rot[3])
+		kTranslate,	   // movement/rotation; (float pos[3], float rot[3], bool
+					   // already_applied)
 	};
 
 	typedef std::variant<uint32_t, double_t, std::string> MsgNode;

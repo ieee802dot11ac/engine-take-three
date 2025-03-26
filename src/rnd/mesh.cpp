@@ -1,4 +1,5 @@
 #include "mesh.hpp"
+#include "bases/obj.hpp"
 #include "bases/pos.hpp"
 #include <SDL2/SDL_opengl.h>
 #include <cstring>
@@ -52,6 +53,7 @@ void Mesh::Draw() {
 }
 
 void Mesh::OnMsg(Message &msg) {
+	Object::OnMsg(msg);
 	Drawable::OnMsg(msg);
 	Positionable::OnMsg(msg);
 }
@@ -65,9 +67,15 @@ void Mesh::InitDisplayList() {
 
 	glNewList(mDisplayListId.value(), GL_COMPILE);
 
-	glInterleavedArrays(GL_T2F_N3F_V3F, 0, mVerts.data());
+	std::vector<Vtx::VtxGlData> verts_ogl;
 
-	if (mTexture.get() != nullptr) {
+	for (Vtx &v : mVerts) {
+		verts_ogl.push_back(v.ToGLForm());
+	}
+
+	glInterleavedArrays(GL_T2F_N3F_V3F, 0, verts_ogl.data());
+
+	if (mTexture != nullptr) {
 		glEnable(GL_TEXTURE_2D);
 		mTexture->Activate();
 	}
