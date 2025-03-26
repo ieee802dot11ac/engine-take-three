@@ -1,42 +1,33 @@
 #include "pos.hpp"
+#include "math/xfm.hpp"
+#include <unordered_map>
+
+static std::unordered_map<const Object *, const Positionable *> WorldCalcCache;
 
 Positionable::Positionable() : mTransform(), mBillboarding(false) {}
 
 Positionable::~Positionable() {}
 
-Vector3 Positionable::WorldPos() const {
-    Vector3 v = mTransform.mPos;
-    const Object* cur = mParent;
-    while (cur != nullptr) {
-        if (cur->CanBecome<Positionable>()) {
-            v += dynamic_cast<const Positionable*>(cur)->mTransform.mPos;
-        }
-        cur = cur->mParent;
-    }
-    return v;
+Transform Positionable::WorldXfm() const {
+	Transform t = mTransform;
+	const Object *current = mParent;
+	while (current != nullptr) {
+		if (current->CanBecome<Positionable>()) {
+			const Positionable *dipshit = nullptr;
+			if (!WorldCalcCache.contains(current)) {
+				dipshit = dynamic_cast<const Positionable *>(current);
+				WorldCalcCache.emplace(current, dipshit);
+			} else
+				dipshit = WorldCalcCache.at(current);
+			t += dipshit->mTransform;
+		}
+		current = current->mParent;
+	}
+	return t;
 }
 
-Vector3 Positionable::WorldRot() const {
-    Vector3 v = mTransform.mRot;
-    const Object* cur = mParent;
-    while (cur != nullptr) {
-        if (cur->CanBecome<Positionable>()) {
-            v += dynamic_cast<const Positionable*>(cur)->mTransform.mRot;
-        }
-        cur = cur->mParent;
-    }
-    return v;
-}
+Vector3 Positionable::WorldPos() const { return WorldXfm().mPos; }
 
-Vector3 Positionable::WorldScl() const {
-    Vector3 v = mTransform.mScale;
-    const Object* cur = mParent;
-    while (cur != nullptr) {
-        if (cur->CanBecome<Positionable>()) {
-            v *= dynamic_cast<const Positionable*>(cur)->mTransform.mScale;
-        }
-        cur = cur->mParent;
-    }
-    return v;
-}
+Vector3 Positionable::WorldRot() const { return WorldXfm().mRot; }
 
+Vector3 Positionable::WorldScl() const { return WorldXfm().mScale; }

@@ -17,7 +17,7 @@
 		assert(bool(expr));                                                    \
 	}
 
-void do_tests() { /*
+void do_tests() {
 	TEST(vec_math)
 	{
 		FUNNY_ASSERT(Vector2(7, 3) + Vector2(2, 5) == Vector2(9, 8))
@@ -62,7 +62,7 @@ void do_tests() { /*
 		FUNNY_ASSERT(Object().CanBecome<Vector2>() == false)
 	}
 	ENDTEST(obj)
-	*/
+
 	TEST(pos)
 	{
 		Positionable a, b;
