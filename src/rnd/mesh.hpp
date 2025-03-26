@@ -48,7 +48,7 @@ struct Face {
 
 	operator const uint16_t *() const { return idx; }
 	uint16_t operator[](uint i) const {
-		assert(i < 3);
+		SDL_assert(i < 3);
 		return idx[i];
 	}
 };

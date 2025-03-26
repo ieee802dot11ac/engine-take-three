@@ -10,7 +10,7 @@ Positionable::Positionable() : mTransform(), mBillboarding(false) {}
 Positionable::~Positionable() {}
 
 void Positionable::OnMsg(Message &msg) {
-	if (msg.mType == Message::kTranslate && std::get<uint32_t>(msg[6]) != 0) {
+	if (msg == Message::kTranslate && std::get<uint32_t>(msg[6]) != 0) {
 		mTransform.mPos.x += std::get<double>(msg[0]);
 		mTransform.mPos.y += std::get<double>(msg[1]);
 		mTransform.mPos.z += std::get<double>(msg[2]);
@@ -18,7 +18,7 @@ void Positionable::OnMsg(Message &msg) {
 		mTransform.mRot.y += std::get<double>(msg[4]);
 		mTransform.mRot.z += std::get<double>(msg[5]);
 		msg.mNodes.reserve(7);
-		msg.mNodes.at(6) = (uint32_t)1;
+		msg[6] = (uint32_t)1;
 	}
 }
 
