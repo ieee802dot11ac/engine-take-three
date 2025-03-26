@@ -107,6 +107,22 @@ void Object::Reparent(std::unique_ptr<Object> &new_parent) {
 		mParent->mChildObjs.push_back(this);
 }
 
+void Object::Reparent(Object *new_parent) {
+	if (mParent != nullptr) {
+		for (std::vector<Object *>::iterator it = mParent->mChildObjs.begin();
+			 it != mParent->mChildObjs.end(); it++) {
+			if (*it == this) {
+				mParent->mChildObjs.erase(it);
+				break;
+			}
+		}
+	}
+
+	mParent = new_parent;
+	if (new_parent != nullptr)
+		mParent->mChildObjs.push_back(this);
+}
+
 const Object *Object::FindByName(std::string name) const {
 	if (mName == name) {
 		return this;

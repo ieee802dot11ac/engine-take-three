@@ -51,15 +51,10 @@ class Object {
 	/// Reparents `this` to new_parent.
 	void Reparent(std::unique_ptr<Object> &new_parent);
 	void Reparent(std::shared_ptr<Object> &new_parent);
+	void Reparent(Object *new_parent);
 
 	/// Recursively runs a function to `this` and to its children.
 	void ApplyFuncToChildren(void (*)(Object *));
-
-	// Create a new object from gObjectGenerators via the name given by
-	// cls_name.
-	Object *New(std::string cls_name);
-
-	static std::unordered_map<const char *, ObjFunc> gObjectGenerators;
 
 	template <typename T> bool CanBecome() const {
 		const Object *o = this;
@@ -81,6 +76,12 @@ class Object {
 	std::string mName;
 	Object *mParent;
 	std::vector<Object *> mChildObjs;
+
+	/// Create a new object from gObjectGenerators via the name given by
+	/// cls_name.
+	static Object *New(std::string cls_name);
+
+	static std::unordered_map<const char *, ObjFunc> gObjectGenerators;
 
 	NEW_OBJECT(Object)
 	REGISTER
