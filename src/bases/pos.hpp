@@ -9,6 +9,7 @@ class Positionable : public virtual Object {
 	Positionable();
 	virtual ~Positionable();
 	CLASS_NAME_CRUFT(Positionable)
+	virtual void OnMsg(Message &msg);
 
 	Transform mTransform;
 	bool mBillboarding; // forces rotation to match camera angle

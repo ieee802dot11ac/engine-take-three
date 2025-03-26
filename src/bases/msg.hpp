@@ -18,9 +18,10 @@
 struct Message {
 	enum MsgType {
 		kNoType,
-		kDraw,			  // propagates draw calls; (void)
-		kInputDigitalMsg, // input handling; (int inputId, int upOrDown)
-		kInputAnalogMsg,  // input handling; (int inputId, float newVal)
+		kDraw,		   // propagates draw calls; (void)
+		kInputDigital, // input handling; (int inputId, int upOrDown)
+		kInputAnalog,  // input handling; (int inputId, float newVal)
+		kTranslate,	   // movement/rotation; (float pos[3], float rot[3])
 	};
 
 	typedef std::variant<uint32_t, double_t, std::string> MsgNode;

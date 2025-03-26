@@ -1,4 +1,5 @@
 #include "mesh.hpp"
+#include "bases/pos.hpp"
 #include <SDL2/SDL_opengl.h>
 #include <cstring>
 
@@ -48,6 +49,11 @@ void Mesh::Draw() {
 		}
 		glDisable(GL_TEXTURE_2D);
 	}
+}
+
+void Mesh::OnMsg(Message &msg) {
+	Drawable::OnMsg(msg);
+	Positionable::OnMsg(msg);
 }
 
 void Mesh::InitDisplayList() {

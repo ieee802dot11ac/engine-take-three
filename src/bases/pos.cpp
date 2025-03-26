@@ -8,6 +8,17 @@ Positionable::Positionable() : mTransform(), mBillboarding(false) {}
 
 Positionable::~Positionable() {}
 
+void Positionable::OnMsg(Message &msg) {
+	if (msg.mType == Message::kTranslate) {
+		mTransform.mPos.x += std::get<double>(msg[0]);
+		mTransform.mPos.y += std::get<double>(msg[1]);
+		mTransform.mPos.z += std::get<double>(msg[2]);
+		mTransform.mRot.x += std::get<double>(msg[3]);
+		mTransform.mRot.y += std::get<double>(msg[4]);
+		mTransform.mRot.z += std::get<double>(msg[5]);
+	}
+}
+
 Transform Positionable::WorldXfm() const {
 	Transform t = mTransform;
 	const Object *current = mParent;

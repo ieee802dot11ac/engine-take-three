@@ -36,6 +36,7 @@ class Mesh : public Positionable, public Drawable {
 	virtual ~Mesh();
 	CLASS_NAME_CRUFT(Mesh)
 	virtual void Draw();
+	virtual void OnMsg(Message &);
 
 	void InitDisplayList();
 
