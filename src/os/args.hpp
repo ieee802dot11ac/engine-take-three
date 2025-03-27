@@ -27,8 +27,16 @@ class Arguments {
 	std::vector<Argument> mArguments;
 
   public:
-	void ArgsInit(int argc, const char **argv);
-	Argument &operator[](std::string);
-
-	static Arguments &gAllArgs;
+	static void Init(int argc, const char **argv);
+	Argument operator[](std::string);
+	bool ArgBool(std::string name);
+	uint32_t ArgInt(std::string name);
+	std::string ArgStr(std::string name);
 };
+
+inline bool operator==(const Arguments::Argument &lhs,
+					   const Arguments::Argument &rhs) {
+	return lhs.first == rhs.first;
+}
+
+extern Arguments *gAllArgs;

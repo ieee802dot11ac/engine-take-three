@@ -8,6 +8,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_opengl.h>
 
+#include "os/args.hpp"
+
 #include "rnd/mesh.hpp"
 #include "rnd/rend.hpp"
 #include "rnd/tex.hpp"
@@ -19,17 +21,21 @@ static void CallClassIniters() {
 
 void do_tests(void);
 
-int main(int argc, char** argv) {
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "engine initializing, commit " GIT_COMMIT_HASH);
+std::string gAppName;
+
+int main(int argc, char **argv) {
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+				"engine initializing, commit " GIT_COMMIT_HASH);
 	SDL_Init(SDL_INIT_EVERYTHING);
 	atexit(SDL_Quit);
 	IMG_Init(IMG_INIT_PNG | IMG_INIT_JXL);
 	atexit(IMG_Quit);
-	if (argc > 1 && strcmp(argv[1], "--test") == 0) { 
-		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "DOING TESTS"); 
-		CallClassIniters(); 
-		do_tests(); 
-		return 0; 
+	Arguments::Init(argc, const_cast<const char **>(argv));
+	if (gAllArgs->ArgBool("test")) {
+		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "DOING TESTS");
+		CallClassIniters();
+		do_tests();
+		return 0;
 	}
 
 	Renderer r;
@@ -39,7 +45,8 @@ int main(int argc, char** argv) {
 	while (1) {
 		SDL_Event e; // temp until i setup proper event handling
 		while (SDL_PollEvent(&e)) {
-			if (e.type == SDL_QUIT) goto exit_now;
+			if (e.type == SDL_QUIT)
+				goto exit_now;
 		}
 		SDL_FlushEvents(1, -1);
 
