@@ -1,5 +1,6 @@
 #include "args.hpp"
 #include <SDL2/SDL_assert.h>
+#include <SDL2/SDL_log.h>
 #include <span>
 #include <string>
 
@@ -23,7 +24,7 @@ Arguments::Arguments(int argc, const char **argv) {
 			} else {
 				i++;
 				std::string second_half = args[i];
-				if (second_half.find_first_not_of("0123456789") ==
+				if (second_half.find_first_not_of("0123456789") >=
 					second_half.size()) { // fully int
 					mArguments.push_back(
 						Argument(argname, (uint32_t)std::stoul(second_half)));
@@ -55,6 +56,8 @@ bool Arguments::ArgBool(std::string name) {
 	if (arg.first
 			.empty()) // since a nonfound arg shouldn't be, it won't have a name
 		return false;
+
+	SDL_assert(arg.second.index() == 0);
 	return std::get<bool>(arg.second);
 }
 
@@ -62,6 +65,8 @@ uint32_t Arguments::ArgInt(std::string name) {
 	Argument arg = (*this)[name];
 	if (arg.first.empty())
 		return -1;
+
+	SDL_assert(arg.second.index() == 1);
 	return std::get<uint32_t>(arg.second);
 }
 
@@ -69,5 +74,7 @@ std::string Arguments::ArgStr(std::string name) {
 	Argument arg = (*this)[name];
 	if (arg.first.empty())
 		return "";
+
+	SDL_assert(arg.second.index() == 2);
 	return std::get<std::string>(arg.second);
 }
